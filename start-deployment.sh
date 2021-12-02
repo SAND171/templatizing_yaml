@@ -5,18 +5,18 @@
 # Azure Event Hub
 
 
-function deploy_embedded() {
+function deploy_embedded_kafka() {
 echo "Starting deployment Embedded"
 }
 
 
-function deploy_external() {
+function deploy_external_kafka() {
 
 
 }
 
 
-function deloy_azure() {
+function deloy_azure_event_hub() {
 
 
 }
