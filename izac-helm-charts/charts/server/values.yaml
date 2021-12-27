@@ -1,0 +1,103 @@
+# Default values for server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: k8s-master:5000/server:5de876c97957b7e454aad852d9b4020e5ef1f360
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+volumes:
+  name: image-storage
+  claimname: image-persistent-volume-claim
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 4015
+
+strategy:
+  type: Recreate
+components: server
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+env:
+  file_path: /usr/images
+  prisma_url: http://primsa-cluster-ip-service:4466
+  api_host_73: http://izac-kafkaadmin:80/kafkaadmin
+  api_host_74: http://izac-eventview:80/eventview
+  api_host_77: http://izac-jobserver:80/jobserver
+  api_host_78: http://izac-queryconsumeroffsets:80/queryconsumeroffsets
+  kafka_connect_url: http://izac-cp-kafka-connect:8083/
+  schema_registry_url: http://izac-cp-schema-registry:8081/
+  kafka_rest_proxy_url: http://cp-kafka-rest-external:8082/
+  keycloak_url: http://10.10.10.58:32263/auth
+  database_url: postgresql://prisma:prisma@postgres-cluster-ip:5432/prod?schema=default$default
+  keycloak_user_name: username
+  keycloak_user_pass: password
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

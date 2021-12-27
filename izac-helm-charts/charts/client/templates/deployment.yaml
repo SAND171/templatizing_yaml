@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "client.fullname" . }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "client.selectorLabels" . | nindent 6 }}
+      component: {{.Values.components}}
+  template:
+    metadata:
+      labels:
+        {{- include "client.selectorLabels" . | nindent 8 }}
+        component: {{.Values.components}}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- if eq .Values.image.tag " " }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{else}}
+          image: "{{ .Values.image.repository }}"
+          {{- end}}
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+    

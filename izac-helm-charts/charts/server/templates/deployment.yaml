@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "server.fullname" . }}
+  labels:
+    {{- include "server.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  strategy: 
+    type: {{ .Values.strategy.type }}
+  selector:
+    matchLabels:
+      {{- include "server.selectorLabels" . | nindent 6 }}
+      component: {{.Values.components}}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "server.selectorLabels" . | nindent 8 }}
+        component: {{.Values.components}}   
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "server.serviceAccountName" . }}
+      volumes:
+        - name: {{.Values.volumes.name}}
+          persistentVolumeClaim:
+            claimName: {{.Values.volumes.claimname}}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- if eq .Values.image.tag " " }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{else}}
+          image: "{{ .Values.image.repository }}"
+          {{- end}}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 4010
+          volumeMounts:
+            - name: {{.Values.volumes.name}}
+              mountPath: /usr/images
+          env:
+            - name: FILE_PATH
+              value: {{.Values.env.file_path}}
+            - name: PRISMA_URL
+              value: {{.Values.env.prisma_url}}
+            - name: API_HOST_73
+              value: {{.Values.env.api_host_73}}
+            - name: API_HOST_74
+              value: {{.Values.env.api_host_74}}
+            - name: API_HOST_77
+              value: {{.Values.env.api_host_77}}
+            - name: API_HOST_78
+              value: {{.Values.env.api_host_78}}
+            - name: KAFKA_CONNECT_URL
+              value: {{.Values.env.kafka_connect_url}}
+            - name: SCHEMA_REGISTRY_URL
+              value: {{.Values.env.schema_registry_url}}
+            - name: KAFKA_REST_PROXY_URL
+              value: {{.Values.env.kafka_rest_proxy_url}}
+            - name: KEYCLOAK_URL
+              value: {{.Values.env.keycloak_url}}
+            - name: DATABASE_URL
+              value: {{.Values.env.database_url}}
+            - name: KEYCLOAK_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-user-name
+                  key: {{.Values.env.keycloak_user_name}}
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: keycloak-user-pass
+                  key: {{.Values.env.keycloak_user_pass}}
+
+  
+      

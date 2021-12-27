@@ -1,0 +1,67 @@
+## ------------------------------------------------------
+## Client
+## ------------------------------------------------------
+cp-client:
+  enabled: true
+  image:
+    repository: gcr.io/izac-k8s/izacuidocker/client
+    pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
+  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  imagePullSecrets: []
+  #  - name: "regcred" 
+  # TODO: find correct security context for user in this zk-image  
+  securityContext: 
+    runAsUser: 0
+
+  resources: {}
+  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
+  ## and remove the curly braces after 'resources:'
+  #  limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  #  requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+
+service:
+  type: ClusterIP
+  port: 4015
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+## ------------------------------------------------------
+## server
+## ------------------------------------------------------
