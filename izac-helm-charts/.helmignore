@@ -14,10 +14,15 @@
 *.swp
 *.bak
 *.tmp
-*.orig
 *~
 # Various IDEs
 .project
 .idea/
 *.tmproj
-.vscode/
+# Images and archives
+*.png
+*.tgz
+scripts/
+screenshots/
+docs/index.html
+unused/

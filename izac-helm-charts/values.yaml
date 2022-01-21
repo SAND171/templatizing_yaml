@@ -1,21 +1,88 @@
 ## ------------------------------------------------------
-## Client
+## Zookeeper
 ## ------------------------------------------------------
-cp-client:
+cp-zookeeper:
   enabled: true
-  image:
-    repository: gcr.io/izac-k8s/izacuidocker/client
-    pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+  servers: 1
+  image: confluentinc/cp-zookeeper
+  imageTag: 6.2.0
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
   ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-  imagePullSecrets: []
-  #  - name: "regcred" 
-  # TODO: find correct security context for user in this zk-image  
+  imagePullSecrets:
+  #  - name: "regcred"
+  heapOptions: "-Xms512M -Xmx512M"
+  persistence:
+    enabled: true
+    ## The size of the PersistentVolume to allocate to each Zookeeper Pod in the StatefulSet. For
+    ## production servers this number should likely be much larger.
+    ##
+    ## Size for Data dir, where ZooKeeper will store the in-memory database snapshots.
+    dataDirSize: 50Gi
+    # dataDirStorageClass: ""
+
+    ## Size for data log dir, which is a dedicated log device to be used, and helps avoid competition between logging and snaphots.
+    dataLogDirSize: 50Gi
+    # dataLogDirStorageClass: ""
+  resources: {}
   securityContext: 
     runAsUser: 0
+  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
+  ## and remove the curly braces after 'resources:'
+  #  limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  #  requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 
+## ------------------------------------------------------
+## Kafka
+## ------------------------------------------------------
+cp-kafka:
+  enabled: true
+  replicas: 3
+  image: confluentinc/cp-kafka
+  imageTag: 6.2.0
+  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
+  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  imagePullSecrets:
+  #  - name: "regcred"
+  heapOptions: "-Xms512M -Xmx1024M"
+  persistence:
+    enabled: true
+    # storageClass: ""
+    size: 500Gi
+    disksPerBroker: 1
+  resources: {}
+  securityContext: 
+    runAsUser: 0
+  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
+  ## and remove the curly braces after 'resources:'
+  #  limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  #  requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  configurationOverrides:
+    "offsets.topic.replication.factor": "3"
+    "default.replication.factor": 3
+    "min.insync.replicas": 2
+    "transaction.max.timeout.ms": "3600000"
+
+## ------------------------------------------------------
+## Schema Registry
+## ------------------------------------------------------
+cp-schema-registry:
+  enabled: true
+  image: confluentinc/cp-schema-registry
+  imageTag: 6.2.0
+  nodePort: 30081
+  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
+  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  imagePullSecrets:
+  #  - name: "regcred"
+  heapOptions: "-Xms512M -Xmx512M"
   resources: {}
   ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
   ## and remove the curly braces after 'resources:'
@@ -27,41 +94,163 @@ cp-client:
   #   memory: 128Mi
 
 
-service:
-  type: ClusterIP
-  port: 4015
+## ------------------------------------------------------
+## Kafka Connect
+## ------------------------------------------------------
+cp-kafka-connect:
+  enabled: true
+  image: 10.10.10.32:5000/kafka-connect
+  imageTag: latest
+  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
+  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  imagePullSecrets:
+  #  - name: "regcred"
+  heapOptions: "-Xms512M -Xmx512M"
+  nodePort:  30083
+  resources: {}
+  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
+  ## and remove the curly braces after 'resources:'
+  #  limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  #  requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  configurationOverrides:
+    "plugin.path": "/usr/share/java,/usr/share/confluent-hub-components"
+    "key.converter": "io.confluent.connect.avro.AvroConverter"
+    "value.converter": "io.confluent.connect.avro.AvroConverter"
+    "key.converter.schemas.enable": "false"
+    "value.converter.schemas.enable": "false"
+    "internal.key.converter": "org.apache.kafka.connect.json.JsonConverter"
+    "internal.value.converter": "org.apache.kafka.connect.json.JsonConverter"
+    "config.storage.replication.factor": "1"
+    "offset.storage.replication.factor": "1"
+    "status.storage.replication.factor": "1"
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+consumeroffsetmonitoring:
+  enabled: true
+  image:
+    repository: whiteklay/consumeroffsetsmonitoring
+    tag: latest
+  kafka:
+    consumerOffsetsOutputTopic: consumerOffsetsTest3
+    offsetConsumerClientID: Kafka_ConsumerOffsets_Monitor
+    offsetConsumerGroupID: consumer-offset
+    numberOfRecordsToCommit: 5
+
+
+eventview:
+  enabled: true
+  image:
+    repository: 10.10.10.32:5000/eventview
+    tag: latest
+  kafka:
+    metadataMaxAgeMs: 300000
+    consumerGroupID: eventview
+  service:
+    enabled: true
+    httpPort: 80
+    nodePort: 32074
+    type: NodePort
+
+kafkaadmin:
+  enabled: true
+  image:
+    repository: 10.10.10.32:5000/kafkaadmin
+    tag: latest
+  kafka:
+    kafkaConsumerGroupIDAdmin: kafkaAdmin
+  service:
+    enabled: true
+    httpPort: 80
+    nodePort: 32073
+    type: NodePort
+
+metadata:
+  enabled: true
+  image:
+    repository: 10.10.10.32:5000/metadata
+    tag: latest
+  schemaSubjectNamePrefix: metadata
+  service:
+    enabled: true
+    httpPort: 80
+    nodePort: 32072
+    type: NodePort
+
+
+
+joblauncherspark:
+  replicationaCount: 1
+  image:
+    repository: whiteklay/joblauncherspark
+    tag: latest
+    pullPolicy: IfNotPresent
+  kafka:
+    consumergroupid: joblauncherspark
+    sparkflowjobqueuetopic: joblauncherspark
+  sparkflowimagewithtag: ilanosortap/izac:latest
+  SPARK_FLOW_MAIN_APPLICATION_FILE: "local:///opt/spark/examples/jars/izac-distribution-assembly-1.4-Alpha2.jar"
+
+
+
+jobserver:
+  replicaCount: 1
+  image:
+    repository: 10.10.10.32:5000/jobserver
+    tag: latest
+    pullPolicy: IfNotPresent
+  kafka:
+    jobqueuetopic: jobqueue
+    SPARK_FLOW_JOB_QUEUE_TOPIC: joblauncherspark
+  springContextPath: "/jobserver"
+  images:
+    flowimagewithtag: whiteklay/flowkafkastreams:latest
+    profileimagewithtag: whiteklay/profilekafkastreams:latest
+
+
+queryconsumeroffsets:
+  replicaCount: 1
+  image:
+    repository: 10.10.10.32:5000/queryconsumeroffsets
+    tag: latest
+    pullPolicy: IfNotPresent
+  kafka:
+    OFFSET_CONSUMER_GROUP_ID: consumer-offset3
+    CONSUMER_OFFSETS_OUTPUT_TOPIC: consumerOffsetsTest3
+    AUTO_OFFSET_RESET_CONFIG: earliest
+  springContextPath: "/queryconsumeroffsets"
+
+
+mysql:
+  enabled: true
+
+postgresql:
+  enabled: true
+
+superset:
+  enabled: true
 
 ## ------------------------------------------------------
-## server
+## REST Proxy
 ## ------------------------------------------------------
+cp-kafka-rest:
+  enabled: true
+  image: confluentinc/cp-kafka-rest
+  imageTag: 5.5.0
+  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
+  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  imagePullSecrets:
+  #  - name: "regcred"
+  heapOptions: "-Xms512M -Xmx512M"
+  resources: {}
+  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
+  ## and remove the curly braces after 'resources:'
+  #  limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  #  requests:
+  #   cpu: 100m
+  #   memory: 128Mi

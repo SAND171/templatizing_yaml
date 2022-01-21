@@ -1,0 +1,24 @@
+{{- if .Values.coordinator.podDisruptionBudget.enabled }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  labels:
+    app: {{ template "druid.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.coordinator.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "druid.coordinator.fullname" . }}
+spec:
+{{- if .Values.coordinator.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.coordinator.podDisruptionBudget.minAvailable }}
+{{- end }}
+{{- if .Values.coordinator.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.coordinator.podDisruptionBudget.maxUnavailable }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "druid.name" . }}
+      component: {{ .Values.coordinator.name }}
+      release: {{ .Release.Name }}
+{{- end }}

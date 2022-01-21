@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "postgres.fullname" . }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "postgres.selectorLabels" . | nindent 6 }}
+      component: {{.Values.components}}
+  template:
+    metadata:
+      labels:
+        {{- include "postgres.selectorLabels" . | nindent 8 }}
+        component: {{.Values.components}}
+    spec:
+      volumes:
+        - name: {{.Values.volumes.name}}
+          persistentVolumeClaim:
+            claimName: {{.Values.volumes.claimname}}
+
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}"
+          ports:
+            - containerPort: {{.Values.service.containerPort}}
+          volumeMounts:
+            - name: {{.Values.volumes.name}}
+              mountPath: {{.Values.volumes.mountPath}}
+              subPath: {{.Values.volumes.subPath}}
+          env:
+            - name: "POSTGRES_USER"
+              value: {{.Values.env.postgres_user}}
+            - name: "POSTGRES_PASSWORD"
+              value: {{.Values.env.postgres_password}}
+

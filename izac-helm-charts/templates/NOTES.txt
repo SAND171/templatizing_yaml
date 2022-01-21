@@ -1,22 +1,84 @@
-1. Get the application URL by running these commands:
-{{- if .Values.ingress.enabled }}
-{{- range $host := .Values.ingress.hosts }}
-  {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
-  {{- end }}
-{{- end }}
-{{- else if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "k8s_helm_chart.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "k8s_helm_chart.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "k8s_helm_chart.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "k8s_helm_chart.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
-{{- end }}
+{{- if (index .Values "cp-zookeeper" "enabled") -}}
+## ------------------------------------------------------
+## Zookeeper
+## ------------------------------------------------------
+Connection string for Confluent Kafka:
+  {{ .Release.Name }}-cp-zookeeper-0.{{ .Release.Name }}-cp-zookeeper-headless:{{ default 2181 .Values.clientPort }},{{ .Release.Name }}-cp-zookeeper-1.{{ .Release.Name }}-cp-zookeeper-headless:{{ default 2181 .Values.clientPort }},...
+
+To connect from a client pod:
+
+1. Deploy a zookeeper client pod with configuration:
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: zookeeper-client
+      namespace: {{ .Release.Namespace }}
+    spec:
+      containers:
+      - name: zookeeper-client
+        image: {{index .Values "cp-zookeeper" "image" }}:{{index .Values "cp-zookeeper" "imageTag" }}
+        command:
+          - sh
+          - -c
+          - "exec tail -f /dev/null"
+
+2. Log into the Pod
+
+  kubectl exec -it zookeeper-client -- /bin/bash
+
+3. Use zookeeper-shell to connect in the zookeeper-client Pod:
+
+  zookeeper-shell {{ .Release.Name }}-cp-zookeeper:{{ default 2181 .Values.clientPort }}
+
+4. Explore with zookeeper commands, for example:
+
+  # Gives the list of active brokers
+  ls /brokers/ids
+
+  # Gives the list of topics
+  ls /brokers/topics
+
+  # Gives more detailed information of the broker id '0'
+  get /brokers/ids/0
+{{- end -}}
+{{- if (index .Values "cp-kafka" "enabled") -}}
+## ------------------------------------------------------
+## Kafka
+## ------------------------------------------------------
+To connect from a client pod:
+
+1. Deploy a kafka client pod with configuration:
+
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: kafka-client
+      namespace: {{ .Release.Namespace }}
+    spec:
+      containers:
+      - name: kafka-client
+        image: {{ index .Values "cp-kafka" "image" }}:{{ index .Values "cp-kafka" "imageTag" }}
+        command:
+          - sh
+          - -c
+          - "exec tail -f /dev/null"
+
+2. Log into the Pod
+
+  kubectl exec -it kafka-client -- /bin/bash
+
+3. Explore with kafka commands:
+
+  # Create the topic
+  kafka-topics --zookeeper {{ .Release.Name }}-cp-zookeeper-headless:{{ default 2181 .Values.clientPort }} --topic {{ .Release.Name }}-topic --create --partitions 1 --replication-factor 1 --if-not-exists
+
+  # Create a message
+  MESSAGE="`date -u`"
+
+  # Produce a test message to the topic
+  echo "$MESSAGE" | kafka-console-producer --broker-list {{ .Release.Name }}-cp-kafka-headless:9092 --topic {{ .Release.Name }}-topic
+
+  # Consume a test message from the topic
+  kafka-console-consumer --bootstrap-server {{ .Release.Name }}-cp-kafka-headless:9092 --topic {{ .Release.Name }}-topic --from-beginning --timeout-ms 2000 --max-messages 1 | grep "$MESSAGE"
+{{- end -}}

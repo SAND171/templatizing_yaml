@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "client.fullname" . }}
+  name: {{.Values.service.name}}
 spec:
   type: {{ .Values.service.type }}
   selector:

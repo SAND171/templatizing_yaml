@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "consumeroffsetmonitoring.fullname" . }}
+  labels:
+{{ include "consumeroffsetmonitoring.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "consumeroffsetmonitoring.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "consumeroffsetmonitoring.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "consumeroffsetmonitoring.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: BOOTSTRAP_SERVERS
+              value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            - name: SCHEMA_REGISTRY_URL
+              value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            - name: CONSUMER_GROUP_ID
+              value: {{ .Values.kafka.consumergroupid }}
+            - name: SPARK_FLOW_JOB_QUEUE_TOPIC
+              value: {{ .Values.kafka.sparkflowjobqueuetopic }}
+            - name: SPARK_FLOW_IMAGE_WITH_TAG
+              value: {{ .Values.sparkflowimagewithtag }}
+            - name: SPARK_FLOW_MAIN_APPLICATION_FILE
+              value: {{ .Values.SPARK_FLOW_MAIN_APPLICATION_FILE }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

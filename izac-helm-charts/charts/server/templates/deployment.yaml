@@ -72,7 +72,7 @@ spec:
             - name: KEYCLOAK_ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-user-name
+                  name: keycloak-user-pass
                   key: {{.Values.env.keycloak_user_name}}
             - name: KEYCLOAK_ADMIN_PASSWORD
               valueFrom: 
