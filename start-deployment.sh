@@ -16,7 +16,7 @@ getLatestImageTag(){
         echo  "$(gcloud container images list-tags $1 | awk '{if($3!=""){print $3,$1,$2}}' | sort -nr | awk 'NR==1{print $3}')"
 }
 
-#intallation of helm charts with lattest images
+#intallation of helm charts with lattest image tag 
 helm_install() {
        echo "helm installation"
        var1=$(find_image_list $1)
@@ -57,10 +57,7 @@ set_container_registry() {
  
 }
 
- //Given an Image get Latest Tag
- getLatestImageTag(){
-        echo  "$(gcloud container images list-tags $1 | awk '{if($3!=""){print $3,$1,$2}}' | sort -nr | awk 'NR==1{print $3}' )"
- }
+
 
 #List all Images  with latest tag
  
@@ -139,7 +136,7 @@ echo "enter 1 to deploy_embedded_kafka
       enter 5 to install gcp sdk
       enter 6 to find the lattest tag of images
       enter 7 to insatll helm 
-      enter 0 to exit from installation
+      enter 8 to exit from installation
      "
 echo "enter your choice !"
 read choice
