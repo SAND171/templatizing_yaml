@@ -1,0 +1,15 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Values.flowJob.serviceAccountName }}-rolebinding
+  namespace: {{ .Values.flowJob.namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.flowJob.serviceAccountName }}
+    namespace: {{ .Values.flowJob.namespace }}
+roleRef:
+  kind: Role
+  name: {{ .Values.flowJob.serviceAccountName }}-role
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

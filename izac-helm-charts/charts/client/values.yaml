@@ -5,11 +5,11 @@
 replicaCount: 1
 
 image:
-  repository: 10.10.10.32:5000/client:latest
+  repository: gcr.io/izackubernetes/izac/master/client
   
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "34b7ff67ca8154c0906a2e38e56cea7fb2908b18"
 
 imagePullSecrets: []
 nameOverride: ""

@@ -1,0 +1,14 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "flow-utils.serviceAccountName" . }}-clusterrolebinding
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "flow-utils.serviceAccountName" . }}
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: {{ include "flow-utils.serviceAccountName" . }}-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

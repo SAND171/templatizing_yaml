@@ -1,0 +1,13 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.flowJob.serviceAccountName }}-role
+  namespace: {{ .Values.flowJob.namespace }}
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["configmaps"]
+  verbs: ["get", "create", "list", "watch", "update"]
+
+
+{{- end }}

@@ -1,21 +1,23 @@
-# Default values for postgres.
+# Default values for kafka-to-postgres file.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: postgres
+  repository: ytrg10/kafka-to-postgres
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "10.11"
+  tag: latest
 
-components: postgres
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-
+kafka:
+  CONSUMER_PROPERTIES: '{
+        
+      }'
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -24,17 +26,7 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  #name: ""
-
-volumes:
-  name: postgres-storage
-  claimname: database-persistent-volume-claim
-  mountPath: /var/lib/postgresql/data
-  subPath: postgres
-
-env:
-  postgres_user: prisma
-  postgres_password: prisma
+  name: ""
 
 podAnnotations: {}
 
@@ -51,22 +43,16 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 5432
-  containerPort: 5432
-  targetPort: 5432
-  name: postgres-cluster-ip
+  port: 80
 
 ingress:
   enabled: false
-  className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+      paths: []
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -96,3 +82,22 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+envVariables:
+  postgresServer: 10.10.10.57:30432
+  database: profilemetrics
+  username: postgres
+  password: postgrespwd
+  table: metrics
+  outputTopic: profile-test-1
+  sr_url: http://10.10.10.57:30081
+  kafka_broker: kafka.cluster.local:31090
+  groupId: group1
+
+hostNames:
+  kafka_broker_alias: kafka.cluster.local
+  kafka_broker_ip: 10.10.10.57
+
+
+
+

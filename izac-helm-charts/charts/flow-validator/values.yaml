@@ -1,21 +1,24 @@
-# Default values for postgres.
+# Default values for flow-validator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: postgres
+  repository: prohankumar/flow-validator
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "10.11"
+  tag: "1"
 
-components: postgres
+
+kafkaBrokers: ""
+schemaRegistry: ""
+flowConfigs: "{}"
+
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
-
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -24,17 +27,7 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  #name: ""
-
-volumes:
-  name: postgres-storage
-  claimname: database-persistent-volume-claim
-  mountPath: /var/lib/postgresql/data
-  subPath: postgres
-
-env:
-  postgres_user: prisma
-  postgres_password: prisma
+  name: ""
 
 podAnnotations: {}
 
@@ -51,22 +44,20 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 5432
-  containerPort: 5432
-  targetPort: 5432
-  name: postgres-cluster-ip
+  port: 80
 
 ingress:
   enabled: false
-  className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: chart-example.local
       paths:
-        - path: /
-          pathType: ImplementationSpecific
+      - path: /
+        backend:
+          serviceName: chart-example.local
+          servicePort: 80
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

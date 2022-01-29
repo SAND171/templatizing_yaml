@@ -18,11 +18,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          {{- if eq .Values.image.tag " " }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{else}}
-          image: "{{ .Values.image.repository }}"
-          {{- end}}
           ports:
             - containerPort: 3000
           imagePullPolicy: {{ .Values.image.pullPolicy }}

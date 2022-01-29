@@ -99,8 +99,8 @@ cp-schema-registry:
 ## ------------------------------------------------------
 cp-kafka-connect:
   enabled: true
-  image: 10.10.10.32:5000/kafka-connect
-  imageTag: latest
+  image: gcr.io/izackubernetes/izac/master/kafkaconnect
+  imageTag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
   ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   imagePullSecrets:
@@ -144,8 +144,8 @@ consumeroffsetmonitoring:
 eventview:
   enabled: true
   image:
-    repository: 10.10.10.32:5000/eventview
-    tag: latest
+    repository: gcr.io/izackubernetes/izac/master/eventview
+    tag: b9ab43f0ecd08c6e10d66ddf666a055aa3c28f41
   kafka:
     metadataMaxAgeMs: 300000
     consumerGroupID: eventview
@@ -171,8 +171,8 @@ kafkaadmin:
 metadata:
   enabled: true
   image:
-    repository: 10.10.10.32:5000/metadata
-    tag: latest
+    repository: gcr.io/izackubernetes/izac/master/metadata
+    tag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
   schemaSubjectNamePrefix: metadata
   service:
     enabled: true
@@ -199,8 +199,8 @@ joblauncherspark:
 jobserver:
   replicaCount: 1
   image:
-    repository: 10.10.10.32:5000/jobserver
-    tag: latest
+    repository: gcr.io/izackubernetes/izac/master/jobserver
+    tag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
     pullPolicy: IfNotPresent
   kafka:
     jobqueuetopic: jobqueue
@@ -214,8 +214,8 @@ jobserver:
 queryconsumeroffsets:
   replicaCount: 1
   image:
-    repository: 10.10.10.32:5000/queryconsumeroffsets
-    tag: latest
+    repository: gcr.io/izackubernetes/izac/master/queryconsumeroffsets
+    tag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
     pullPolicy: IfNotPresent
   kafka:
     OFFSET_CONSUMER_GROUP_ID: consumer-offset3
@@ -254,3 +254,82 @@ cp-kafka-rest:
   #  requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+flow-utils:
+  replicaCount: 1
+  image:
+    repository: prohankumar/flow-utils
+    tag: "15"
+  jarBuildingJob:
+    image: prohankumar/flow_utils_jar_building:6
+  kafka:
+    external: true
+    address: PLAINTEXT://izac-cp-kafka-headless:9092
+  schemaRegistry:
+    external: true
+    address: http://izac-cp-schema-registry:8081
+  flowJob:
+    image: prohankumar/flow:20
+    serviceAccountName: flow-sa
+    namespace: default
+    flinkBucket: s3p://izac-flink
+    flowConfigs: "{}"
+    stateStore:
+      endpoint: http://10.10.10.33:32727
+      accessKey: minio
+      secretKey: minio123
+  flowServer:
+    containerName: flow-server
+    args: ["com.whiteklay.flow.flink.FlowRequestServer"]
+    service:
+      port: 8080
+      targetPort: 50051
+  flowRequestProcessor:
+    containerName: flow-request-processor
+    args: ["com.whiteklay.flow.flink.FlowRequestProcessor"]
+  flowFlinkJobSubmitter:
+    containerName: flow-flink-job-submitter
+    args: ["com.whiteklay.flow.flink.SubmitFlowJob"]
+  
+
+
+flow-validator:
+  replicaCount: 1
+  image:
+    repository: prohankumar/flow-validator
+    tag: "1"
+  kafkaBrokers: PLAINTEXT://izac-cp-kafka-headless:9092
+  schemaRegistry: http://izac-cp-schema-registry:8081
+  flowConfigs: "{}"
+  service:
+    type: NodePort
+    port: 80
+    targetPort: 50051
+
+
+profile-kafka-to-postgres:
+  image:
+    repository: ytrg10/kafka-to-postgres
+    tag: latest
+  envVariables:
+    postgresServer: izac-postgresql-headless:5432
+    database: profilemetrics
+    username: postgres
+    password: postgrespwd
+    table: metrics
+    outputTopic: profile-test-1
+    sr_url: http://izac-cp-schema-registry:8081
+    kafka_broker: izac-cp-kafka-headless:8081
+    groupId: profile-kafka-to-postgres
+
+
+profile-metrics-api:
+  image:
+    repository: ytrg10/profile_metrics_api
+    tag: 1.0.0
+  envVariables:
+    postgresServer: izac-postgresql-headless:5432
+    database: profilemetrics
+    username: postgres
+    password: postgrespwd
+    table: metrics

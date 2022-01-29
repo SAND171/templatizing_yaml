@@ -35,11 +35,7 @@ spec:
             claimName: {{.Values.volumes.claimname}}
       containers:
         - name: {{ .Chart.Name }}
-          {{- if eq .Values.image.tag " " }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{else}}
-          image: "{{ .Values.image.repository }}"
-          {{- end}}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 4010

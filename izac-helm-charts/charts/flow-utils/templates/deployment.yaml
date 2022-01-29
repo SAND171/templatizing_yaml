@@ -1,0 +1,263 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "flow-utils.fullname" . }}
+  labels:
+    {{- include "flow-utils.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "flow-utils.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "flow-utils.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "flow-utils.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.flowServer.containerName }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: {{- range .Values.flowServer.args }}
+            - {{.}}
+          {{- end }}
+          env:
+          - name: grpc.server.port
+            value: {{ .Values.service.port | quote }}
+          {{- range $name, $value := .Values.jvm }}
+          {{- if $value }}
+          - name: {{ $name }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
+          ports:
+          - name: grpc
+            containerPort: {{ .Values.flowServer.service.port }}
+            protocol: TCP
+          # readinessProbe:
+          #   exec:
+          #     command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.service.port }}", "-service=com.whiteklay.flow.flink.FlowRequestServer"]
+          #   initialDelaySeconds: {{ .Values.service.readinessProbeDelaySeconds | default "10" }}
+          # livenessProbe:
+          #   exec:
+          #     command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.service.port }}"]
+          #   initialDelaySeconds: {{ .Values.service.livenessProbeDelaySeconds | default "15" }}
+          env:
+            # - name: "KAFKA_ADDRESS"
+            #   value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            # - name: "SCHEMA_REGISTRY_ADDRESS"
+            #   value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            {{ if .Values.kafka.external }}
+            - name: "KAFKA_ADDRESS"
+              value: {{ .Values.kafka.address }}
+            {{ else }}
+            - name: "KAFKA_ADDRESS"
+              value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            {{ end }}
+
+            {{ if .Values.schemaRegistry.external }}
+            - name: "SCHEMA_REGISTRY_ADDRESS"
+              value: {{ .Values.schemaRegistry.address }}
+            {{ else }}
+            - name: "SCHEMA_REGISTRY_ADDRESS"
+              value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            {{ end }}
+
+            - name: "MINIO_URL"
+              value: {{ .Values.flowJob.stateStore.endpoint }}
+            - name: "MINIO_ACCESS_KEY"
+              value: {{ .Values.flowJob.stateStore.accessKey }}
+            - name: "MINIO_SECRET_KEY"
+              value: {{ .Values.flowJob.stateStore.secretKey }}
+            - name: "MINIO_IMAGE"
+              value: minio/mc:latest
+            - name: "JAR_BUILDING_JOB_IMAGE"
+              value: {{ .Values.jarBuildingJob.image }}
+            - name: "FLOW_JOB_IMAGE"
+              value: {{ .Values.flowJob.image }}
+            - name: "FLOW_REQUEST_FIRST_TOPIC"
+              value: flow_request_1
+            - name: "FLOW_FLINK_JOB_SUBMISSION_TOPIC"
+              value: flow_request_2
+            - name: "ARTIFACTS_BUCKET"
+              value: flow-dependencies
+            - name: "FLOW_UTILS_IMAGE"
+              value: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            - name: "FLOW_SERVICE_ACCOUNT_NAME"
+              value: {{ .Values.flowJob.serviceAccountName }}
+            - name: "FLOW_NAMESPACE"
+              value: {{ .Values.flowJob.namespace }}
+            - name: "FLINK_BUCKET"
+              value: {{ .Values.flowJob.flinkBucket }}
+            - name: "FLOW_CONFIGS"
+              value: {{ .Values.flowJob.flowConfigs | quote}}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Values.flowRequestProcessor.containerName }}
+          args: {{- range .Values.flowRequestProcessor.args }}
+            - {{.}}
+          {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # ports:
+          #   - name: http
+          #     containerPort: 80
+          #     protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          env:
+            # - name: "KAFKA_ADDRESS"
+            #   value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            # - name: "SCHEMA_REGISTRY_ADDRESS"
+            #   value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            {{ if .Values.kafka.external }}
+            - name: "KAFKA_ADDRESS"
+              value: {{ .Values.kafka.address }}
+            {{ else }}
+            - name: "KAFKA_ADDRESS"
+              value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            {{ end }}
+
+            {{ if .Values.schemaRegistry.external }}
+            - name: "SCHEMA_REGISTRY_ADDRESS"
+              value: {{ .Values.schemaRegistry.address }}
+            {{ else }}
+            - name: "SCHEMA_REGISTRY_ADDRESS"
+              value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            {{ end }}
+            - name: "MINIO_URL"
+              value: {{ .Values.flowJob.stateStore.endpoint }}
+            - name: "MINIO_ACCESS_KEY"
+              value: {{ .Values.flowJob.stateStore.accessKey }}
+            - name: "MINIO_SECRET_KEY"
+              value: {{ .Values.flowJob.stateStore.secretKey }}
+            - name: "MINIO_IMAGE"
+              value: minio/mc:latest
+            - name: "JAR_BUILDING_JOB_IMAGE"
+              value: {{ .Values.jarBuildingJob.image }}
+            - name: "FLOW_JOB_IMAGE"
+              value: {{ .Values.flowJob.image }}
+            - name: "FLOW_REQUEST_FIRST_TOPIC"
+              value: flow_request_1
+            - name: "FLOW_FLINK_JOB_SUBMISSION_TOPIC"
+              value: flow_request_2
+            - name: "ARTIFACTS_BUCKET"
+              value: flow-dependencies
+            - name: "FLOW_UTILS_IMAGE"
+              value: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            - name: "FLOW_SERVICE_ACCOUNT_NAME"
+              value: {{ .Values.flowJob.serviceAccountName }}
+            - name: "FLOW_NAMESPACE"
+              value: {{ .Values.flowJob.namespace }}
+            - name: "FLINK_BUCKET"
+              value: {{ .Values.flowJob.flinkBucket }}
+            - name: "FLOW_CONFIGS"
+              value: {{ .Values.flowJob.flowConfigs | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+        - name: {{ .Values.flowFlinkJobSubmitter.containerName }}
+          args: {{- range .Values.flowFlinkJobSubmitter.args }}
+            - {{.}}
+          {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # ports:
+          #   - name: http
+          #     containerPort: 80
+          #     protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          env:
+            # - name: "KAFKA_ADDRESS"
+            #   value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            # - name: "SCHEMA_REGISTRY_ADDRESS"
+            #   value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            {{ if .Values.kafka.external }}
+            - name: "KAFKA_ADDRESS"
+              value: {{ .Values.kafka.address }}
+            {{ else }}
+            - name: "KAFKA_ADDRESS"
+              value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            {{ end }}
+
+            {{ if .Values.schemaRegistry.external }}
+            - name: "SCHEMA_REGISTRY_ADDRESS"
+              value: {{ .Values.schemaRegistry.address }}
+            {{ else }}
+            - name: "SCHEMA_REGISTRY_ADDRESS"
+              value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            {{ end }}
+            - name: "MINIO_URL"
+              value: {{ .Values.flowJob.stateStore.endpoint }}
+            - name: "MINIO_ACCESS_KEY"
+              value: {{ .Values.flowJob.stateStore.accessKey }}
+            - name: "MINIO_SECRET_KEY"
+              value: {{ .Values.flowJob.stateStore.secretKey }}
+            - name: "MINIO_IMAGE"
+              value: minio/mc:latest
+            - name: "JAR_BUILDING_JOB_IMAGE"
+              value: {{ .Values.jarBuildingJob.image }}
+            - name: "FLOW_JOB_IMAGE"
+              value: {{ .Values.flowJob.image }}
+            - name: "FLOW_REQUEST_FIRST_TOPIC"
+              value: flow_request_1
+            - name: "FLOW_FLINK_JOB_SUBMISSION_TOPIC"
+              value: flow_request_2
+            - name: "ARTIFACTS_BUCKET"
+              value: flow-dependencies
+            - name: "FLOW_UTILS_IMAGE"
+              value: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            - name: "FLOW_SERVICE_ACCOUNT_NAME"
+              value: {{ .Values.flowJob.serviceAccountName }}
+            - name: "FLOW_NAMESPACE"
+              value: {{ .Values.flowJob.namespace }}
+            - name: "FLINK_BUCKET"
+              value: {{ .Values.flowJob.flinkBucket }}
+            - name: "FLOW_CONFIGS"
+              value: {{ .Values.flowJob.flowConfigs | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

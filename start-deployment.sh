@@ -32,6 +32,9 @@ helm_install() {
                       echo -n "$j"
                       echo -n "   "
                       a=$(getLatestImageTag $j)
+                      chart_name=${j##*/}
+                      #echo $chart_name
+                      #helm upgrade --install izac ./izac-helm-charts --set $chart_name.image.repository=$j --set $chart_name.image.tag=$a
                      
                       echo "$a"
                       i=i+1
@@ -76,6 +79,7 @@ find_images_list_and_tag()
                       echo -n "$j"
                       echo -n "   "
                       a=$(getLatestImageTag $j)
+                      
                       echo "$a"
                       i=i+1
               fi
@@ -135,7 +139,7 @@ echo "enter 1 to deploy_embedded_kafka
       enter 4 to set_container_registry 
       enter 5 to install gcp sdk
       enter 6 to find the lattest tag of images
-      enter 7 to insatll helm 
+      enter 7 to insatll helm deployment
       enter 8 to exit from installation
      "
 echo "enter your choice !"
