@@ -36,7 +36,7 @@ spec:
       containers:
         {{- if .Values.prometheus.jmx.enabled }}
         - name: prometheus-jmx-exporter
-          image: "{{ .Values.prometheus.jmx.image }}:{{ .Values.prometheus.jmx.imageTag }}"
+          image: "{{ .Values.prometheus.jmx.image.repository }}:{{ .Values.prometheus.jmx.image.tag }}"
           imagePullPolicy: "{{ .Values.prometheus.jmx.imagePullPolicy }}"
           command:
           - java
@@ -57,7 +57,7 @@ spec:
             mountPath: /etc/jmx-kafka-connect
         {{- end }}
         - name: {{ template "cp-kafka-connect.name" . }}-server
-          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
           ports:
             - name: kafka-connect

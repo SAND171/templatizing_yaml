@@ -29,14 +29,14 @@ helm_install() {
                      continue
               else
                      
-                      echo -n "$j"
-                      echo -n "   "
+                      #echo -n "$j"
+                      #echo -n "   "
                       a=$(getLatestImageTag $j)
                       chart_name=${j##*/}
                       #echo $chart_name
-                      #helm upgrade --install izac ./izac-helm-charts --set $chart_name.image.repository=$j --set $chart_name.image.tag=$a
+                      helm upgrade --install izac ./izac-helm-charts --set $chart_name.image.repository=$j --set $chart_name.image.tag=$a
                      
-                      echo "$a"
+                     #echo "$a"
                       i=i+1
               fi
 

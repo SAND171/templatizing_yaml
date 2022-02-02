@@ -6,8 +6,9 @@ replicaCount: 1
 
 ## Image Info
 ## ref: https://hub.docker.com/r/confluentinc/cp-kafka/
-image: confluentinc/cp-kafka-connect
-imageTag: 6.1.0
+image: 
+  repository: confluentinc/cp-kafka-connect
+  tag: 6.1.0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -86,8 +87,9 @@ prometheus:
   ## ref: https://github.com/prometheus/jmx_exporter
   jmx:
     enabled: true
-    image: solsson/kafka-prometheus-jmx-exporter@sha256
-    imageTag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
+    image:
+      repository: solsson/kafka-prometheus-jmx-exporter@sha256
+      tag: 6f82e2b0464f50da8104acd7363fb9b995001ddff77d248379f8788e78946143
     imagePullPolicy: IfNotPresent
     port: 5556
 

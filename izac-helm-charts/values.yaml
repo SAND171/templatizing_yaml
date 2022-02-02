@@ -4,8 +4,9 @@
 cp-zookeeper:
   enabled: true
   servers: 1
-  image: confluentinc/cp-zookeeper
-  imageTag: 6.2.0
+  image:
+    repository: confluentinc/cp-zookeeper
+    tag: 6.2.0
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
   ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   imagePullSecrets:
@@ -99,8 +100,9 @@ cp-schema-registry:
 ## ------------------------------------------------------
 cp-kafka-connect:
   enabled: true
-  image: gcr.io/izackubernetes/izac/master/kafkaconnect
-  imageTag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
+  image:
+    repository: gcr.io/izackubernetes/izac/master/kafkaconnect
+    tag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
   ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   imagePullSecrets:
