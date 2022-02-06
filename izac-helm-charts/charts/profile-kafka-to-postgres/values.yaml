@@ -84,19 +84,19 @@ tolerations: []
 affinity: {}
 
 envVariables:
-  postgresServer: 10.10.10.57:30432
+  postgresServer: 10.10.10.32:30432
   database: profilemetrics
   username: postgres
   password: postgrespwd
   table: metrics
   outputTopic: profile-test-1
-  sr_url: http://10.10.10.57:30081
+  sr_url: http://10.10.10.32:30081
   kafka_broker: kafka.cluster.local:31090
   groupId: group1
 
 hostNames:
   kafka_broker_alias: kafka.cluster.local
-  kafka_broker_ip: 10.10.10.57
+  kafka_broker_ip: 10.10.10.32
 
 
 

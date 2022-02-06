@@ -160,8 +160,8 @@ eventview:
 kafkaadmin:
   enabled: true
   image:
-    repository: 10.10.10.32:5000/kafkaadmin
-    tag: latest
+    repository: gcr.io/izackubernetes/izac/master/kafkaadmin
+    tag: e063df27a0faf52e3008b024010c87bac801356c
   kafka:
     kafkaConsumerGroupIDAdmin: kafkaAdmin
   service:
@@ -312,7 +312,7 @@ flow-validator:
 profile-kafka-to-postgres:
   image:
     repository: ytrg10/kafka-to-postgres
-    tag: latest
+    tag: 1.0.1
   envVariables:
     postgresServer: izac-postgresql-headless:5432
     database: profilemetrics
