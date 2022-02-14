@@ -102,7 +102,7 @@ cp-kafka-connect:
   enabled: true
   image:
     repository: gcr.io/izackubernetes/izac/master/kafkaconnect
-    tag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
+    tag: e063df27a0faf52e3008b024010c87bac801356c
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
   ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
   imagePullSecrets:
@@ -147,7 +147,7 @@ eventview:
   enabled: true
   image:
     repository: gcr.io/izackubernetes/izac/master/eventview
-    tag: b9ab43f0ecd08c6e10d66ddf666a055aa3c28f41
+    tag: e063df27a0faf52e3008b024010c87bac801356c
   kafka:
     metadataMaxAgeMs: 300000
     consumerGroupID: eventview
@@ -174,7 +174,7 @@ metadata:
   enabled: true
   image:
     repository: gcr.io/izackubernetes/izac/master/metadata
-    tag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
+    tag: e063df27a0faf52e3008b024010c87bac801356c
   schemaSubjectNamePrefix: metadata
   service:
     enabled: true
@@ -202,7 +202,7 @@ jobserver:
   replicaCount: 1
   image:
     repository: gcr.io/izackubernetes/izac/master/jobserver
-    tag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
+    tag: e063df27a0faf52e3008b024010c87bac801356c
     pullPolicy: IfNotPresent
   kafka:
     jobqueuetopic: jobqueue
@@ -217,7 +217,7 @@ queryconsumeroffsets:
   replicaCount: 1
   image:
     repository: gcr.io/izackubernetes/izac/master/queryconsumeroffsets
-    tag: 500a9a1a7530cdcd0da6dafec20650d44f7afd6d
+    tag: e063df27a0faf52e3008b024010c87bac801356c
     pullPolicy: IfNotPresent
   kafka:
     OFFSET_CONSUMER_GROUP_ID: consumer-offset3

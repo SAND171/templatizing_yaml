@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: prohankumar/jobserver
-  tag: 0.11
+  repository: gcr.io/izackubernetes/izac/master/jobserver
+  tag: e063df27a0faf52e3008b024010c87bac801356c
   pullPolicy: IfNotPresent
 
 k8s:

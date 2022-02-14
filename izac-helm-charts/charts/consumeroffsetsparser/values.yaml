@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: 10.10.10.32:5000/consumeroffsetsparser
-  tag: latest
+  repository: gcr.io/izackubernetes/izac/master/consumeroffsetsparser
+  tag: e063df27a0faf52e3008b024010c87bac801356c
   pullPolicy: IfNotPresent
 
 kafka:

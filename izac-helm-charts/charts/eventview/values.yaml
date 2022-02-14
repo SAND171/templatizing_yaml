@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: prohankumar/eventview
-  tag: 0.06
+  repository: gcr.io/izackubernetes/izac/master/eventview 
+  tag: e063df27a0faf52e3008b024010c87bac801356c
   pullPolicy: IfNotPresent
 
 
