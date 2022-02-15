@@ -170,7 +170,7 @@ nodeport:
 cp-zookeeper:
   ## If true, install the cp-zookeeper chart alongside cp-kafka
   ## ref: ../cp-zookeeper
-  enabled: false
+  enabled: true
   servers: 3
   persistence:
     enabled: true
