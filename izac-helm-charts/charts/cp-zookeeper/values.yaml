@@ -7,7 +7,7 @@
 ## ------------------------------------------------------
 
 ## Number of zookeeper servers, should be odd number
-servers: 3
+servers: 1
 
 ## Minimum number of servers available to ensure the availability of zookeeper service
 ## minAvailable: 2
@@ -39,8 +39,8 @@ updateStrategy: RollingUpdate
 # Security Context
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 # for Zookeeper container
-securityContext: {}
-  #  runAsUser: 1000
+securityContext: 
+   runAsUser: 0
   #  runAsGroup: 1000
 
 ## Zookeeper Configuration
