@@ -326,7 +326,7 @@ profile-kafka-to-postgres:
     outputTopic: profile-test-1
     groupId: profile-kafka-to-postgres
   kafka:
-    external: true
+    external: false
     address: PLAINTEXT://izac-cp-kafka-headless:9092
     CONSUMER_PROPERTIES: '{}'
 
