@@ -146,7 +146,7 @@ postgresqlPassword: postgrespwd
 ## PostgreSQL data dir
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
 ##
-postgresqlDataDir: /bitnami/
+postgresqlDataDir: /bitnami/postgresql/data
 
 ## An array to add extra environment variables
 ## For example:
@@ -307,7 +307,7 @@ persistence:
   ## The path the volume will be mounted at, useful when using different
   ## PostgreSQL images.
   ##
-  mountPath: /bitnami/postgresql
+  mountPath: /bitnami/
 
   ## The subdirectory of the volume to mount to, useful in dev environments
   ## and one PV for multiple services.
