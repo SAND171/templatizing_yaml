@@ -48,10 +48,21 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            {{ if .Values.kafka.external }}
             - name: "KAFKA_ADDRESS"
-              value: {{ .Values.kafka }}
+              value: {{ .Values.kafka.address }}
+            {{ else }}
+            - name: "KAFKA_ADDRESS"
+              value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            {{ end }}
+
+            {{ if .Values.schemaRegistry.external }}
             - name: "SCHEMA_REGISTRY_ADDRESS"
-              value: {{ .Values.schemaRegistry }}
+              value: {{ .Values.schemaRegistry.address }}
+            {{ else }}
+            - name: "SCHEMA_REGISTRY_ADDRESS"
+              value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            {{ end }}
             - name: "FLOW_CONFIGS"
               value: {{ .Values.flowConfigs | quote }}
               

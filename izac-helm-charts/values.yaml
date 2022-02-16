@@ -261,17 +261,17 @@ flow-utils:
   replicaCount: 1
   image:
     repository: prohankumar/flow-utils
-    tag: "15"
+    tag: "cb516b9cd0e44e60d0d84ad3ac2ab90afc48f284"
   jarBuildingJob:
     image: prohankumar/flow_utils_jar_building:6
   kafka:
-    external: true
+    external: false
     address: PLAINTEXT://izac-cp-kafka-headless:9092
   schemaRegistry:
-    external: true
+    external: false
     address: http://izac-cp-schema-registry:8081
   flowJob:
-    image: prohankumar/flow:20
+    image: prohankumar/flow:cb516b9cd0e44e60d0d84ad3ac2ab90afc48f284
     serviceAccountName: flow-sa
     namespace: default
     flinkBucket: s3p://izac-flink
@@ -299,9 +299,13 @@ flow-validator:
   replicaCount: 1
   image:
     repository: prohankumar/flow-validator
-    tag: "1"
-  kafkaBrokers: PLAINTEXT://izac-cp-kafka-headless:9092
-  schemaRegistry: http://izac-cp-schema-registry:8081
+    tag: "cb516b9cd0e44e60d0d84ad3ac2ab90afc48f284"
+  kafka:
+    external: false
+    address: ""
+  schemaRegistry:
+    external: false
+    address: ""
   flowConfigs: "{}"
   service:
     type: NodePort
@@ -320,15 +324,21 @@ profile-kafka-to-postgres:
     password: postgrespwd
     table: metrics
     outputTopic: profile-test-1
-    sr_url: http://izac-cp-schema-registry:8081
-    kafka_broker: izac-cp-kafka-headless:8081
     groupId: profile-kafka-to-postgres
+  kafka:
+    external: true
+    address: PLAINTEXT://izac-cp-kafka-headless:9092
+    CONSUMER_PROPERTIES: '{}'
+
+  schemaRegistry:
+    external: true
+    address: http://izac-cp-schema-registry:8081
 
 
 profile-metrics-api:
   image:
     repository: ytrg10/profile_metrics_api
-    tag: 1.0.0
+    tag: 1.0.3
   envVariables:
     postgresServer: izac-postgresql-headless:5432
     database: profilemetrics

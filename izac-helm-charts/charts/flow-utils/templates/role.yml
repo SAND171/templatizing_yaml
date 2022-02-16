@@ -3,7 +3,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ include "flow-utils.serviceAccountName" . }}-role
-  namespace: default
+  labels:
+    {{- include "flow-utils.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["configmaps"]
@@ -11,6 +16,6 @@ rules:
 
 - apiGroups: ["flinkoperator.k8s.io"] # "" indicates the core API group
   resources: ["flinkclusters"]
-  verbs: ["create", "delete"]
+  verbs: ["get", "create", "delete", "list", "watch"]
 
 {{- end }}

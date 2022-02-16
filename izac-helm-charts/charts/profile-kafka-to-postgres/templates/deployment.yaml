@@ -54,12 +54,24 @@ spec:
               value: {{.Values.envVariables.table}}
             - name: TOPIC
               value: {{.Values.envVariables.outputTopic}}
-            - name: SR_URL
-              value: {{.Values.envVariables.sr_url}}
-            - name: KAFKA_BROKER
-              value: {{.Values.envVariables.kafka_broker}}
+            {{ if .Values.schemaRegistry.external }}
+            - name: "SR_URL"
+              value: {{ .Values.schemaRegistry.address }}
+            {{ else }}
+            - name: "SR_URL"
+              value: http://{{ .Release.Name }}-cp-schema-registry:8081
+            {{ end }}
+            {{ if .Values.kafka.external }}
+            - name: "KAFKA_BROKER"
+              value: {{ .Values.kafka.address }}
+            {{ else }}
+            - name: "KAFKA_BROKER"
+              value: PLAINTEXT://{{ .Release.Name }}-cp-kafka-headless:9092
+            {{ end }}
             - name: GROUP_ID
               value: {{.Values.envVariables.groupId}}
+            - name: TTL_IN_DAYS
+              value: "{{.Values.envVariables.ttl_in_days}}"
             - name: "CONSUMER_PROPERTIES"
               value: {{ .Values.kafka.CONSUMER_PROPERTIES | quote }}
           # livenessProbe:

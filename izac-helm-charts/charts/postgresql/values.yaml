@@ -146,7 +146,7 @@ postgresqlPassword: postgrespwd
 ## PostgreSQL data dir
 ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
 ##
-postgresqlDataDir: /bitnami/postgresql/data
+postgresqlDataDir: /bitnami/postgresql
 
 ## An array to add extra environment variables
 ## For example:

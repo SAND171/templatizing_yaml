@@ -11,8 +11,14 @@ image:
   tag: "1"
 
 
-kafkaBrokers: ""
-schemaRegistry: ""
+kafka:
+  external: false
+  address: ""
+
+schemaRegistry:
+  external: false
+  address: ""
+  
 flowConfigs: "{}"
 
 

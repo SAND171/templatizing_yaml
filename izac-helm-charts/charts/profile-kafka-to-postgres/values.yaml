@@ -8,16 +8,22 @@ image:
   repository: ytrg10/kafka-to-postgres
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
+  tag: 1.0.1
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 kafka:
+  external: false
+  address: ""
   CONSUMER_PROPERTIES: '{
         
       }'
+
+schemaRegistry:
+  external: false
+  address: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -84,19 +90,18 @@ tolerations: []
 affinity: {}
 
 envVariables:
-  postgresServer: 10.10.10.32:30432
+  postgresServer: 10.10.10.57:30432
   database: profilemetrics
   username: postgres
   password: postgrespwd
   table: metrics
   outputTopic: profile-test-1
-  sr_url: http://10.10.10.32:30081
-  kafka_broker: kafka.cluster.local:31090
   groupId: group1
+  ttl_in_days: 7
 
 hostNames:
   kafka_broker_alias: kafka.cluster.local
-  kafka_broker_ip: 10.10.10.32
+  kafka_broker_ip: 10.10.10.57
 
 
 

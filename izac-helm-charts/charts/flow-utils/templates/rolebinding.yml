@@ -3,10 +3,15 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ include "flow-utils.serviceAccountName" . }}-rolebinding
+  labels:
+    {{- include "flow-utils.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 subjects:
   - kind: ServiceAccount
     name: {{ include "flow-utils.serviceAccountName" . }}
-    namespace: default
 roleRef:
   kind: Role
   name: {{ include "flow-utils.serviceAccountName" . }}-role

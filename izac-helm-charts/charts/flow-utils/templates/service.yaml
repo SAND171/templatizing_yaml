@@ -11,7 +11,5 @@ spec:
       targetPort: {{ .Values.flowServer.service.targetPort }}
       protocol: TCP
       name: flow-server-grpc
-      {{- if hasKey .Values.flowServer.service "nodePort" }}
-      {{- end }}
   selector:
     {{- include "flow-utils.selectorLabels" . | nindent 4 }}
