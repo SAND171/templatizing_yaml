@@ -43,7 +43,7 @@ spec:
               protocol: TCP
           env:
             - name: POSTGRES_SERVER
-              value: {{.Values.envVariables.postgresServer}}
+              value: {{ .Release.Name }}-postgresql-headless:5432
             - name: DATABASE
               value: {{.Values.envVariables.database}}
             - name: USERNAME
