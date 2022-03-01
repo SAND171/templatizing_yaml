@@ -74,7 +74,7 @@ env:
   kafka_connect_url: http://izac-cp-kafka-connect:8083/
   schema_registry_url: http://izac-cp-schema-registry:8081/
   kafka_rest_proxy_url: http://cp-kafka-rest-external:8082/
-  keycloak_url: http://10.10.10.32:30978/auth
+  keycloak_url: http://10.10.10.32:31068/auth
   database_url: postgresql://prisma:prisma@postgres-cluster-ip:5432/prod?schema=default$default
   keycloak_user_name: username
   keycloak_user_pass: password

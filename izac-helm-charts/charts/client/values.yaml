@@ -49,18 +49,18 @@ service:
   name: client-cluster-ip-service
 
 ingress:
+  name: ingress-service
   enabled: true
   className: ""
-  annotations: {}
+  annotations: 
+     kubernetes.io/ingress.class: nginx
+     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # kubernetes.io/tls-acme: "true"
   service: 
      port1: 4015
      port2: 4015
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-
   hosts:
-    - host: chart-example.local
-      paths:
+    - paths:
         - path: /(.*)
           pathType: Prefix
           ipservice: client-cluster-ip-service
