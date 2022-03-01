@@ -3,7 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ .Values.flowJob.serviceAccountName }}-rolebinding
-  namespace: {{ .Values.flowJob.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "flow-utils.labels" . | nindent 4 }}
   {{- with .Values.serviceAccount.annotations }}
@@ -13,7 +13,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{ .Values.flowJob.serviceAccountName }}
-    namespace: {{ .Values.flowJob.namespace }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: {{ .Values.flowJob.serviceAccountName }}-role

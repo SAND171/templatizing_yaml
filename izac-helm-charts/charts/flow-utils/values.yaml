@@ -28,7 +28,6 @@ schemaRegistry:
 flowJob:
   image: prohankumar/flow:8
   serviceAccountName: flow-sa
-  namespace: default
   flinkBucket: s3p://izac-flink
   flowConfigs: "{}"
   stateStore:

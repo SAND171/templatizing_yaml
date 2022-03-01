@@ -273,7 +273,6 @@ flow-utils:
   flowJob:
     image: prohankumar/flow:cb516b9cd0e44e60d0d84ad3ac2ab90afc48f284
     serviceAccountName: flow-sa
-    namespace: default
     flinkBucket: s3p://izac-flink
     flowConfigs: "{}"
     stateStore:

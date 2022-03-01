@@ -101,7 +101,7 @@ spec:
             - name: "FLOW_SERVICE_ACCOUNT_NAME"
               value: {{ .Values.flowJob.serviceAccountName }}
             - name: "FLOW_NAMESPACE"
-              value: {{ .Values.flowJob.namespace }}
+              value: {{ .Release.Namespace }}
             - name: "FLINK_BUCKET"
               value: {{ .Values.flowJob.flinkBucket }}
             - name: "FLOW_CONFIGS"
@@ -171,7 +171,7 @@ spec:
             - name: "FLOW_SERVICE_ACCOUNT_NAME"
               value: {{ .Values.flowJob.serviceAccountName }}
             - name: "FLOW_NAMESPACE"
-              value: {{ .Values.flowJob.namespace }}
+              value: {{ .Release.Namespace }}
             - name: "FLINK_BUCKET"
               value: {{ .Values.flowJob.flinkBucket }}
             - name: "FLOW_CONFIGS"
@@ -242,7 +242,7 @@ spec:
             - name: "FLOW_SERVICE_ACCOUNT_NAME"
               value: {{ .Values.flowJob.serviceAccountName }}
             - name: "FLOW_NAMESPACE"
-              value: {{ .Values.flowJob.namespace }}
+              value: {{ .Release.Namespace }}
             - name: "FLINK_BUCKET"
               value: {{ .Values.flowJob.flinkBucket }}
             - name: "FLOW_CONFIGS"
