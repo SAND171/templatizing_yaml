@@ -17,6 +17,6 @@ rules:
 
 - apiGroups: ["flinkoperator.k8s.io"] # "" indicates the core API group
   resources: ["flinkclusters"]
-  verbs: ["get", "create", "delete", "list", "watch"]
+  verbs: ["get", "create", "delete", "list", "watch", "update"]
 
 {{- end }}

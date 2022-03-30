@@ -13,7 +13,7 @@ metadata:
 rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["configmaps"]
-  verbs: ["get", "create", "list", "watch", "update"]
+  verbs: ["get", "create", "list", "watch", "update", "delete"]
 
 
 {{- end }}

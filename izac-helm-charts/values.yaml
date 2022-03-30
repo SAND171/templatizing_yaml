@@ -126,9 +126,9 @@ cp-kafka-connect:
     "value.converter.schemas.enable": "false"
     "internal.key.converter": "org.apache.kafka.connect.json.JsonConverter"
     "internal.value.converter": "org.apache.kafka.connect.json.JsonConverter"
-    "config.storage.replication.factor": "1"
-    "offset.storage.replication.factor": "1"
-    "status.storage.replication.factor": "1"
+    "config.storage.replication.factor": "3"
+    "offset.storage.replication.factor": "3"
+    "status.storage.replication.factor": "3"
 
 
 consumeroffsetmonitoring:
@@ -261,7 +261,7 @@ flow-utils:
   replicaCount: 1
   image:
     repository: prohankumar/flow-utils
-    tag: "cb516b9cd0e44e60d0d84ad3ac2ab90afc48f284"
+    tag: "d82c99f22da22ad6ba19d8d9649849a5ef6addb0"
   jarBuildingJob:
     image: prohankumar/flow_utils_jar_building:6
   kafka:
@@ -271,7 +271,7 @@ flow-utils:
     external: false
     address: http://izac-cp-schema-registry:8081
   flowJob:
-    image: prohankumar/flow:cb516b9cd0e44e60d0d84ad3ac2ab90afc48f284
+    image: prohankumar/flow:d82c99f22da22ad6ba19d8d9649849a5ef6addb0
     serviceAccountName: flow-sa
     flinkBucket: s3p://izac-flink
     flowConfigs: "{}"
@@ -298,7 +298,7 @@ flow-validator:
   replicaCount: 1
   image:
     repository: prohankumar/flow-validator
-    tag: "cb516b9cd0e44e60d0d84ad3ac2ab90afc48f284"
+    tag: "d82c99f22da22ad6ba19d8d9649849a5ef6addb0"
   kafka:
     external: false
     address: ""
@@ -330,7 +330,7 @@ profile-kafka-to-postgres:
     CONSUMER_PROPERTIES: '{}'
 
   schemaRegistry:
-    external: true
+    external: false
     address: http://izac-cp-schema-registry:8081
 
 
