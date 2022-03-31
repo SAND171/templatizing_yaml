@@ -48,19 +48,25 @@ spec:
             - name: PRISMA_URL
               value: {{.Values.env.prisma_url}}
             - name: API_HOST_73
-              value: {{.Values.env.api_host_73}}
+              value: http://{{.Release.Name}}-kafkaadmin:80/kafkaadmin
             - name: API_HOST_74
-              value: {{.Values.env.api_host_74}}
+              value: http://{{.Release.Name}}-eventview:80/eventview
             - name: API_HOST_77
-              value: {{.Values.env.api_host_77}}
+              value: http://{{.Release.Name}}-jobserver:80/jobserver
             - name: API_HOST_78
-              value: {{.Values.env.api_host_78}}
+              value: http://{{.Release.Name}}-queryconsumeroffsets:80/queryconsumeroffsets
             - name: KAFKA_CONNECT_URL
-              value: {{.Values.env.kafka_connect_url}}
+              value: http://{{.Release.Name}}-cp-kafka-connect:8083/
             - name: SCHEMA_REGISTRY_URL
-              value: {{.Values.env.schema_registry_url}}
+              value: http://{{ .Release.Name}}-cp-schema-registry:8081/
             - name: KAFKA_REST_PROXY_URL
-              value: {{.Values.env.kafka_rest_proxy_url}}
+              value: http://cp-kafka-rest-external:8082/
+            - name: GRPC_FLOW_URL
+              value: http://{{ .Release.Name }}-flow-utils:8080
+            - name: GRPC_VALIDATION_URL
+              value: http://{{ .Release.Name }}-flink-flow-validator:80
+            - name: AKKA_HTTP_SERVER
+              value: http://{{ .Release.Name }}-profile-metrics-api:9001//queryMetrics
             - name: KEYCLOAK_URL
               value: {{.Values.env.keycloak_url}}
             - name: DATABASE_URL
