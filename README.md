@@ -51,8 +51,48 @@ When you're ready to make this README your own, just edit this file and use the 
 ## Suggestions for a good README
 Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
 
-## Name
-Choose a self-explaining name for your project.
+## steps to deploy
+1. install keycloak and wait till its pods are in running state.
+
+	helm repo add bitnami https://charts.bitnami.com/bitnami
+	helm install izac-keycloak bitnami/keycloak
+
+after that generate the password using the command which you will get after keycloak installation chart.
+create two file and paste the admin user name and password for keycloak
+	vi KEYCLOAK_ADMIN_USERNAME.txt  (paste the user name here)
+	vi KEYCLOAK_ADMIN_PASSWORD.txt  (paste the admin password here)
+
+pass the admin username and password of keycloak through secrets
+  	kubectl create secret generic keycloak-user-pass --from-file=username=./KEYCLOAK_ADMIN_USERNAME.txt --from-file=password=./KEYCLOAK_ADMIN_PASSWORD.txt
+
+client image build by providing keycloakurl in .env.production
+
+add annotation field in svc of keycloak to make external ip to internal ip
+ 	service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+
+2.clone the repository
+	git clone https://gitlab.com/whiteklay/izacinstaller.git
+	git checkout star
+	cd izacinstaller
+3. install the charts.
+   
+
+	./deploy_starhealth_prod.sh
+add annotation field in svc of nginx ingress to make external ip to internal ip
+ 	service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+
+4. login into keycloak with admin user and password 
+and check wheather realm is cretaed or not with izac name
+if not then 
+	exec into the server pod
+	go in the directory config(cd config)
+	change the keycloak url and usernmae and password
+	now go one directory back(cd ..)
+	run npm keycloak-seed
+now
+	you can create user in keycloak with some predefined roles
+
+5.now login  to  izac with credentails 
 
 ## Description
 Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
