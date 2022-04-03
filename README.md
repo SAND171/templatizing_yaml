@@ -85,9 +85,8 @@ add annotation field in svc of nginx ingress to make external ip to internal ip
 and check wheather realm is cretaed or not with izac name
 if not then 
 	exec into the server pod
-	go in the directory config(cd config)
+	go in the directory config(vi config/init.env)
 	change the keycloak url and usernmae and password
-	now go one directory back(cd ..)
 	run npm keycloak-seed
 now
 	you can create user in keycloak with some predefined roles
