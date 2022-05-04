@@ -13,7 +13,7 @@ export KAFKA_ADDRESS=izac-cp-kafka-headless:9092
 
 export SCHEMA_REGISTRY_URL=http://izac-cp-schema-registry:8081
 
-export FLINK_BUCKET=wasbs://izac-flink@izzac.blob.core.windows.net
+export FLINK_BUCKET=s3p://izac-flink
 
 export FLOW_CONFIGS='{\\\"flinkProperties\\\": {\\\"fs.azure.account.key.izzac.blob.core.windows.net\\\": \\\"/yF/lxi/Tx9uLa3fSSuUqr1rvVowwDX6bRuYwFtmJYFRwwLMNIDSBMzTi7l31dN6ue+Jpt1DVNLzf+1bX6RgOQ==\\\"}}'
 
