@@ -122,7 +122,7 @@ EOM
  fi
  }
 
-##====================================================
+======================================================
 #INSTALLATION START
 ##====================================================
 
@@ -172,6 +172,7 @@ case "$choice" in
                 helm_install $REGISTRY_URL
                 ;;
          
-         8) echo "exiting  from the loop without performing any action"
+         8) echo "exiting  from the loop without performing any action 'deploy'"
+              deploy_lattest_build
                 
 esac
