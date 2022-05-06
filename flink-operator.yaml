@@ -443,16 +443,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -502,9 +492,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -547,16 +534,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -606,9 +583,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -687,8 +661,6 @@ spec:
                                   type: string
                                 gmsaCredentialSpecName:
                                   type: string
-                                hostProcess:
-                                  type: boolean
                                 runAsUserName:
                                   type: string
                               type: object
@@ -705,16 +677,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -764,9 +726,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -934,8 +893,6 @@ spec:
                             type: string
                           gmsaCredentialSpecName:
                             type: string
-                          hostProcess:
-                            type: boolean
                           runAsUserName:
                             type: string
                         type: object
@@ -1163,6 +1120,8 @@ spec:
                           type: object
                         ephemeral:
                           properties:
+                            readOnly:
+                              type: boolean
                             volumeClaimTemplate:
                               properties:
                                 metadata:
@@ -1191,18 +1150,6 @@ spec:
                                         type: string
                                       type: array
                                     dataSource:
-                                      properties:
-                                        apiGroup:
-                                          type: string
-                                        kind:
-                                          type: string
-                                        name:
-                                          type: string
-                                      required:
-                                      - kind
-                                      - name
-                                      type: object
-                                    dataSourceRef:
                                       properties:
                                         apiGroup:
                                           type: string
@@ -1680,6 +1627,14 @@ spec:
                 type: object
               jobManager:
                 properties:
+                  ServiceAnnotations:
+                    additionalProperties:
+                      type: string
+                    type: object
+                  ServiceLabels:
+                    additionalProperties:
+                      type: string
+                    type: object
                   accessScope:
                     type: string
                   extraPorts:
@@ -1926,16 +1881,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -1985,9 +1930,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -2030,16 +1972,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -2089,9 +2021,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -2170,8 +2099,6 @@ spec:
                                   type: string
                                 gmsaCredentialSpecName:
                                   type: string
-                                hostProcess:
-                                  type: boolean
                                 runAsUserName:
                                   type: string
                               type: object
@@ -2188,16 +2115,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -2247,9 +2164,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -2314,16 +2228,6 @@ spec:
                       failureThreshold:
                         format: int32
                         type: integer
-                      grpc:
-                        properties:
-                          port:
-                            format: int32
-                            type: integer
-                          service:
-                            type: string
-                        required:
-                        - port
-                        type: object
                       httpGet:
                         properties:
                           host:
@@ -2373,9 +2277,6 @@ spec:
                         required:
                         - port
                         type: object
-                      terminationGracePeriodSeconds:
-                        format: int64
-                        type: integer
                       timeoutSeconds:
                         format: int32
                         type: integer
@@ -2431,16 +2332,6 @@ spec:
                       failureThreshold:
                         format: int32
                         type: integer
-                      grpc:
-                        properties:
-                          port:
-                            format: int32
-                            type: integer
-                          service:
-                            type: string
-                        required:
-                        - port
-                        type: object
                       httpGet:
                         properties:
                           host:
@@ -2490,9 +2381,6 @@ spec:
                         required:
                         - port
                         type: object
-                      terminationGracePeriodSeconds:
-                        format: int64
-                        type: integer
                       timeoutSeconds:
                         format: int32
                         type: integer
@@ -2577,8 +2465,6 @@ spec:
                             type: string
                           gmsaCredentialSpecName:
                             type: string
-                          hostProcess:
-                            type: boolean
                           runAsUserName:
                             type: string
                         type: object
@@ -2794,16 +2680,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -2853,9 +2729,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -2898,16 +2771,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -2957,9 +2820,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -3038,8 +2898,6 @@ spec:
                                   type: string
                                 gmsaCredentialSpecName:
                                   type: string
-                                hostProcess:
-                                  type: boolean
                                 runAsUserName:
                                   type: string
                               type: object
@@ -3056,16 +2914,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -3115,9 +2963,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -3230,18 +3075,6 @@ spec:
                               - kind
                               - name
                               type: object
-                            dataSourceRef:
-                              properties:
-                                apiGroup:
-                                  type: string
-                                kind:
-                                  type: string
-                                name:
-                                  type: string
-                              required:
-                              - kind
-                              - name
-                              type: object
                             resources:
                               properties:
                                 limits:
@@ -3297,14 +3130,6 @@ spec:
                               items:
                                 type: string
                               type: array
-                            allocatedResources:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              type: object
                             capacity:
                               additionalProperties:
                                 anyOf:
@@ -3336,8 +3161,6 @@ spec:
                                 type: object
                               type: array
                             phase:
-                              type: string
-                            resizeStatus:
                               type: string
                           type: object
                       type: object
@@ -3547,6 +3370,8 @@ spec:
                           type: object
                         ephemeral:
                           properties:
+                            readOnly:
+                              type: boolean
                             volumeClaimTemplate:
                               properties:
                                 metadata:
@@ -3575,18 +3400,6 @@ spec:
                                         type: string
                                       type: array
                                     dataSource:
-                                      properties:
-                                        apiGroup:
-                                          type: string
-                                        kind:
-                                          type: string
-                                        name:
-                                          type: string
-                                      required:
-                                      - kind
-                                      - name
-                                      type: object
-                                    dataSourceRef:
                                       properties:
                                         apiGroup:
                                           type: string
@@ -4304,16 +4117,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -4363,9 +4166,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -4408,16 +4208,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -4467,9 +4257,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -4548,8 +4335,6 @@ spec:
                                   type: string
                                 gmsaCredentialSpecName:
                                   type: string
-                                hostProcess:
-                                  type: boolean
                                 runAsUserName:
                                   type: string
                               type: object
@@ -4566,16 +4351,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -4625,9 +4400,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -4692,16 +4464,6 @@ spec:
                       failureThreshold:
                         format: int32
                         type: integer
-                      grpc:
-                        properties:
-                          port:
-                            format: int32
-                            type: integer
-                          service:
-                            type: string
-                        required:
-                        - port
-                        type: object
                       httpGet:
                         properties:
                           host:
@@ -4751,9 +4513,6 @@ spec:
                         required:
                         - port
                         type: object
-                      terminationGracePeriodSeconds:
-                        format: int64
-                        type: integer
                       timeoutSeconds:
                         format: int32
                         type: integer
@@ -4806,16 +4565,6 @@ spec:
                       failureThreshold:
                         format: int32
                         type: integer
-                      grpc:
-                        properties:
-                          port:
-                            format: int32
-                            type: integer
-                          service:
-                            type: string
-                        required:
-                        - port
-                        type: object
                       httpGet:
                         properties:
                           host:
@@ -4865,9 +4614,6 @@ spec:
                         required:
                         - port
                         type: object
-                      terminationGracePeriodSeconds:
-                        format: int64
-                        type: integer
                       timeoutSeconds:
                         format: int32
                         type: integer
@@ -4952,8 +4698,6 @@ spec:
                             type: string
                           gmsaCredentialSpecName:
                             type: string
-                          hostProcess:
-                            type: boolean
                           runAsUserName:
                             type: string
                         type: object
@@ -5169,16 +4913,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -5228,9 +4962,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -5273,16 +5004,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -5332,9 +5053,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -5413,8 +5131,6 @@ spec:
                                   type: string
                                 gmsaCredentialSpecName:
                                   type: string
-                                hostProcess:
-                                  type: boolean
                                 runAsUserName:
                                   type: string
                               type: object
@@ -5431,16 +5147,6 @@ spec:
                             failureThreshold:
                               format: int32
                               type: integer
-                            grpc:
-                              properties:
-                                port:
-                                  format: int32
-                                  type: integer
-                                service:
-                                  type: string
-                              required:
-                              - port
-                              type: object
                             httpGet:
                               properties:
                                 host:
@@ -5490,9 +5196,6 @@ spec:
                               required:
                               - port
                               type: object
-                            terminationGracePeriodSeconds:
-                              format: int64
-                              type: integer
                             timeoutSeconds:
                               format: int32
                               type: integer
@@ -5605,18 +5308,6 @@ spec:
                               - kind
                               - name
                               type: object
-                            dataSourceRef:
-                              properties:
-                                apiGroup:
-                                  type: string
-                                kind:
-                                  type: string
-                                name:
-                                  type: string
-                              required:
-                              - kind
-                              - name
-                              type: object
                             resources:
                               properties:
                                 limits:
@@ -5672,14 +5363,6 @@ spec:
                               items:
                                 type: string
                               type: array
-                            allocatedResources:
-                              additionalProperties:
-                                anyOf:
-                                - type: integer
-                                - type: string
-                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                x-kubernetes-int-or-string: true
-                              type: object
                             capacity:
                               additionalProperties:
                                 anyOf:
@@ -5711,8 +5394,6 @@ spec:
                                 type: object
                               type: array
                             phase:
-                              type: string
-                            resizeStatus:
                               type: string
                           type: object
                       type: object
@@ -5922,6 +5603,8 @@ spec:
                           type: object
                         ephemeral:
                           properties:
+                            readOnly:
+                              type: boolean
                             volumeClaimTemplate:
                               properties:
                                 metadata:
@@ -5950,18 +5633,6 @@ spec:
                                         type: string
                                       type: array
                                     dataSource:
-                                      properties:
-                                        apiGroup:
-                                          type: string
-                                        kind:
-                                          type: string
-                                        name:
-                                          type: string
-                                      required:
-                                      - kind
-                                      - name
-                                      type: object
-                                    dataSourceRef:
                                       properties:
                                         apiGroup:
                                           type: string
@@ -6795,6 +6466,22 @@ rules:
   - update
   - watch
 - apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets/status
+  verbs:
+  - get
+- apiGroups:
   - ""
   resources:
   - pods
@@ -7003,7 +6690,7 @@ spec:
         - --zap-devel=false
         command:
         - /flink-operator
-        image: asia-south1-docker.pkg.dev/izac-349007/izacdocker/master/flink-operator:8c3c49e53b1c69326e9e03cfd717af9362ed8e88
+        image: asia-south1-docker.pkg.dev/izac-349007/izacdocker/main/flink-operator:56ef5f701731441c97a22179e0866a391b809979
         name: manager
         ports:
         - containerPort: 9443
@@ -7126,4 +6813,3 @@ webhooks:
     resources:
     - flinkclusters
   sideEffects: None
-
