@@ -64,7 +64,7 @@ spec:
             - name: GRPC_FLOW_URL
               value: {{ .Release.Name }}-flow-utils:8080
             - name: GRPC_VALIDATION_URL
-              value: {{ .Release.Name }}-flink-flow-validator:80
+              value: {{ .Release.Name }}-flow-validator:80
             - name: AKKA_HTTP_SERVER
               value: http://{{ .Release.Name }}-profile-metrics-api:9001/queryMetrics
             - name: KEYCLOAK_URL
