@@ -77,7 +77,7 @@ env:
   #grpc_flow_url: http://izac-flow-utils:8080
   #grpc_validation_url: http://izac-flink-flow-validator:80
   kafka_rest_proxy_url: http://cp-kafka-rest-external:8082/
-  keycloak_url: http://10.1.1.178:31670/auth
+  keycloak_url: http://10.10.10.32:30707/auth
   database_url: postgresql://prisma:prisma@postgres-cluster-ip:5432/prod?schema=default$default
   keycloak_user_name: username
   keycloak_user_pass: password
